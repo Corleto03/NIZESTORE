@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@keyframes bounce-x {
+  0%, 100% { transform: translateX(-15%); }
+  50% { transform: translateX(15%); }
+}
+
+.animate-bounce-x {
+  animation: bounce-x 12s ease-in-out infinite;
+}
