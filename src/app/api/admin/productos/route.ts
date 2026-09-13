@@ -125,7 +125,8 @@ export async function POST(req: Request) {
               costo: vCost,
               stock_disponible: isNaN(vStock) ? 10 : vStock,
               estado: "activo",
-              url_imagen: v.url_imagen || defaultImg
+              url_imagen: v.url_imagen || defaultImg,
+              descripcion_variante: v.descripcion_variante ? String(v.descripcion_variante).trim() : null
             }
           });
 

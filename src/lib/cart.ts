@@ -54,6 +54,7 @@ export async function getOrCreateCart() {
         : { id_sesion: userSession.id_sesion, id_cliente: null })
     },
     include: {
+      promocion: true,
       detalle_carrito: {
         include: {
           producto_variante: {
@@ -75,6 +76,7 @@ export async function getOrCreateCart() {
         estado_carrito: 'activo'
       },
       include: {
+        promocion: true,
         detalle_carrito: {
           include: {
             producto_variante: {
@@ -89,5 +91,5 @@ export async function getOrCreateCart() {
     });
   }
 
-  return cart;
+  return cart!;
 }

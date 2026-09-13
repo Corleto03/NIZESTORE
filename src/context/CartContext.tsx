@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { createContext, useContext, useState, useEffect } from "react";
 
@@ -27,6 +27,14 @@ interface Cart {
   descuento: number;
   costo_envio: number;
   total: number;
+  id_promocion?: number | null;
+  promocion?: {
+    id_promocion: number;
+    codigo: string;
+    nombre: string;
+    valor_descuento: number;
+    tipo_descuento: string;
+  } | null;
   detalle_carrito: CartItem[];
 }
 

@@ -428,6 +428,7 @@ model producto {
   proveedor               proveedor?                @relation(fields: [id_proveedor], references: [id_proveedor], onDelete: NoAction, onUpdate: NoAction)
   producto_variante       producto_variante[]
   vista_pagina            vista_pagina[]
+  resena_producto         resena_producto[]
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -440,6 +441,7 @@ model producto_variante {
   stock_disponible    Int                  @default(0)
   estado              String               @default("activo") @db.VarChar(20)
   url_imagen          String?
+  descripcion_variante String?              @db.Text
   detalle_carrito     detalle_carrito[]
   detalle_factura     detalle_factura[]
   detalle_pedido      detalle_pedido[]
@@ -565,4 +567,17 @@ model administrador {
   password_hash    String    @db.VarChar(255)
   activo           Boolean   @default(true)
   fecha_creacion   DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model resena_producto {
+  id_resena      Int      @id @default(autoincrement())
+  id_producto    Int
+  nombre_cliente String   @db.VarChar(100)
+  calificacion   Int
+  comentario     String
+  fecha_creacion DateTime @default(now()) @db.Timestamp(6)
+  verificado     Boolean  @default(true)
+  producto       producto @relation(fields: [id_producto], references: [id_producto], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([id_producto], map: "idx_resena_producto")
 }

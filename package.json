@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "tsx --test tests/**/*.test.ts"
   },
   "dependencies": {
     "@next/swc-win32-x64-msvc": "^16.3.4",

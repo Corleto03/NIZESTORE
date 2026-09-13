@@ -19,6 +19,7 @@ import {
   FolderOpen
 } from "lucide-react";
 import ImageUploader from "./ImageUploader";
+import VariantImagePicker from "./VariantImagePicker";
 
 interface ProductWizardModalProps {
   isOpen: boolean;
@@ -90,6 +91,8 @@ export default function ProductWizardModal({
     costo: string;
     stock: string;
     sku: string;
+    url_imagen?: string;
+    descripcion_variante?: string;
   }>>([]);
 
   const [loading, setLoading] = useState(false);
@@ -138,18 +141,21 @@ export default function ProductWizardModal({
     const rows: any[] = [];
     selectedTallas.forEach((talla) => {
       coloresRopa.forEach((color) => {
+        const existing = clothingVariants.find((cv) => cv.talla === talla && cv.color === color);
         rows.push({
           talla,
           color,
-          precio: basePrice,
-          costo: baseCost,
-          stock: baseStock,
-          sku: `NZ-ROP-${talla}-${color.slice(0, 3).toUpperCase()}`
+          precio: existing?.precio || basePrice,
+          costo: existing?.costo || baseCost,
+          stock: existing?.stock || baseStock,
+          sku: existing?.sku || `NZ-${(selectedCat?.nombre_categoria || "PROD").slice(0, 3).toUpperCase()}-${talla}-${color.slice(0, 3).toUpperCase()}`,
+          url_imagen: existing?.url_imagen || "",
+          descripcion_variante: existing?.descripcion_variante || ""
         });
       });
     });
     setClothingVariants(rows);
-  }, [selectedTallas, coloresRopa, basePrice, baseCost, baseStock, selectedCat]);
+  }, [selectedTallas, coloresRopa, basePrice, baseCost, baseStock, selectedCat, hasVariants]);
 
   const addTalla = () => {
     if (!newTallaInput.trim()) return;
@@ -249,7 +255,8 @@ export default function ProductWizardModal({
         stock_disponible: parseInt(cv.stock, 10) || 0,
         talla: cv.talla,
         color: cv.color,
-        url_imagen: imageUrl || "/images/products/one-piece-vol-100.jpeg"
+        url_imagen: cv.url_imagen || imageUrl || "/images/products/one-piece-vol-100.jpeg",
+        descripcion_variante: cv.descripcion_variante ? cv.descripcion_variante.trim() : null
       }));
     }
 

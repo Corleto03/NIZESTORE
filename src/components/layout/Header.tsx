@@ -2,14 +2,16 @@
 
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
-import { ShoppingCart, User, Search, Package, BarChart3, LogOut, LayoutGrid } from "lucide-react";
+import { ShoppingCart, User, Search, Package, BarChart3, LogOut, LayoutGrid, Heart } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function Header() {
   const { data: session } = useSession();
   const { cart } = useCart();
+  const { wishlistCount } = useWishlist();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -93,6 +95,21 @@ export default function Header() {
                 Mis Pedidos
               </Link>
             )}
+
+            <Link
+              href="/favoritos"
+              className="relative flex items-center p-2 text-gray-700 hover:text-red-600 transition-colors"
+              aria-label="Favoritos"
+              title="Mis Favoritos"
+            >
+              <Heart className="w-5 h-5 mr-1" />
+              <span className="text-sm font-medium hidden lg:inline">Favoritos</span>
+              {wishlistCount > 0 && (
+                <span className="absolute -top-1 -right-1 lg:right-auto lg:left-4 bg-gray-900 text-white text-[11px] font-bold rounded-full h-4 w-4 flex items-center justify-center">
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
 
             <Link
               href="/carrito"

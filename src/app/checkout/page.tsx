@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useCart } from "@/context/CartContext";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { CheckCircle2, AlertCircle, Building2, Truck, CreditCard, ArrowRight, ArrowLeft } from "lucide-react";
+import { CheckCircle2, AlertCircle, Building2, Truck, CreditCard, ArrowRight, ArrowLeft, Tag } from "lucide-react";
 import FreeShippingBar from "@/components/cart/FreeShippingBar";
 import Link from "next/link";
 
@@ -34,6 +34,34 @@ export default function CheckoutPage() {
 
   const [processing, setProcessing] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+
+  const [couponInput, setCouponInput] = useState("");
+  const [applyingCoupon, setApplyingCoupon] = useState(false);
+  const [couponError, setCouponError] = useState("");
+
+  const handleApplyCouponCheckout = async () => {
+    if (!couponInput.trim()) return;
+    setApplyingCoupon(true);
+    setCouponError("");
+    try {
+      const res = await fetch("/api/cart/coupon", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ codigo: couponInput.trim() })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        setCouponError(data.message || "Cupón inválido");
+      } else {
+        setCouponInput("");
+        await refreshCart();
+      }
+    } catch {
+      setCouponError("Error al aplicar cupón");
+    } finally {
+      setApplyingCoupon(false);
+    }
+  };
 
   // Record checkout stages
   const recordStage = async (etapa: string, completada: boolean = false) => {
@@ -491,6 +519,50 @@ export default function CheckoutPage() {
               </p>
             </div>
           ))}
+        </div>
+
+        {/* Coupon code box in Checkout */}
+        <div className="border-t pt-3 pb-1">
+          {Number(cart?.descuento || 0) > 0 ? (
+            <div className="flex items-center justify-between p-2 bg-emerald-50 border border-emerald-200 rounded-lg text-xs">
+              <span className="text-emerald-800 font-semibold flex items-center gap-1.5">
+                <Tag className="w-3.5 h-3.5" />
+                Cupón aplicado (-${Number(cart?.descuento || 0).toFixed(2)})
+              </span>
+              <button
+                type="button"
+                onClick={async () => {
+                  await fetch("/api/cart/coupon", { method: "DELETE" });
+                  await refreshCart();
+                }}
+                className="text-rose-600 font-bold hover:underline"
+              >
+                Quitar
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-1.5">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Cupón (ej: NIZE10)"
+                  value={couponInput}
+                  onChange={(e) => setCouponInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleApplyCouponCheckout())}
+                  className="flex-1 text-xs border border-gray-300 rounded px-2.5 py-1.5 uppercase outline-none focus:border-red-500 font-medium"
+                />
+                <button
+                  type="button"
+                  onClick={handleApplyCouponCheckout}
+                  disabled={applyingCoupon || !couponInput.trim()}
+                  className="bg-gray-900 hover:bg-black text-white text-xs px-3 py-1.5 rounded font-medium disabled:opacity-50"
+                >
+                  {applyingCoupon ? "..." : "Aplicar"}
+                </button>
+              </div>
+              {couponError && <p className="text-[11px] text-rose-600">{couponError}</p>}
+            </div>
+          )}
         </div>
 
         <div className="space-y-2 border-t pt-4 text-sm text-gray-600">
