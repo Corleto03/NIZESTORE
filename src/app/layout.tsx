@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+// import { Inter } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "@/components/layout/AuthProvider";
 import AppLayoutShell from "@/components/layout/AppLayoutShell";
 import PageTracker from "@/components/analytics/PageTracker";
 
-const inter = Inter({ subsets: ["latin"] });
+// const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "NizeStore - Anime & Manga Store (El Salvador)",
@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className={inter.className + " bg-slate-50/50 min-h-screen flex flex-col text-slate-900 antialiased"}>
+      <body className={"bg-slate-50/50 min-h-screen flex flex-col text-slate-900 antialiased"}>
         <AuthProvider>
           <PageTracker />
           <AppLayoutShell>
