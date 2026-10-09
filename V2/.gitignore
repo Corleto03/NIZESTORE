@@ -1,0 +1,11 @@
+.venv/
+**/__pycache__/
+**/*.pyc
+**/.env
+**/config.local.json
+**/runtime/
+**/vendor/
+**/ACCESO_ADMIN.local.txt
+**/*.log
+**/*.dump
+**/respaldos/
